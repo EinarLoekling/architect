@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Employee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-slate-100 p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12 text-center">
+            <h1
+                class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 mb-4">
+                AI Content Employee
+            </h1>
+            <p class="text-xl text-slate-300">Turn expertise into a content ecosystem.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Input Section -->
+            <div class="glass rounded-2xl p-8 shadow-2xl">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center">
+                    <span class="bg-blue-500 w-2 h-8 rounded mr-3"></span>
+                    Inputs
+                </h2>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Expertise / Transcript</label>
+                    <textarea id="expertise" rows="8"
+                        class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                        placeholder="Paste transcript, notes, or raw expertise here..."></textarea>
+                </div>
+
+                <div class="mb-8">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Tone of Voice Profile</label>
+                    <textarea id="tone" rows="6"
+                        class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                        placeholder="Paste tone guide or writing samples..."></textarea>
+                </div>
+
+                <button id="generateBtn" onclick="generateContent()"
+                    class="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-[1.02] active:scale-95 flex justify-center items-center">
+                    <span id="btnText">Generate Assets</span>
+                    <svg id="btnSpinner" class="animate-spin ml-3 h-5 w-5 text-white hidden"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Output Section -->
+            <div class="glass rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center">
+                    <span class="bg-emerald-500 w-2 h-8 rounded mr-3"></span>
+                    Outputs
+                </h2>
+
+                <div id="statusMessage" class="text-slate-400 text-center mt-20">
+                    Ready to generate content.
+                </div>
+
+                <div id="resultsArea" class="hidden space-y-6">
+                    <!-- Tabs -->
+                    <div class="flex space-x-2 border-b border-slate-700 pb-2 overflow-x-auto">
+                        <button onclick="showTab('resource')"
+                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition active-tab"
+                            data-tab="resource">Resource Guide</button>
+                        <button onclick="showTab('linkedin1')"
+                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
+                            data-tab="linkedin1">LinkedIn #1</button>
+                        <button onclick="showTab('linkedin2')"
+                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
+                            data-tab="linkedin2">LinkedIn #2</button>
+                        <button onclick="showTab('email1')"
+                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
+                            data-tab="email1">Email #1</button>
+                        <button onclick="showTab('email2')"
+                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
+                            data-tab="email2">Email #2</button>
+                    </div>
+
+                    <!-- Content Display -->
+                    <div class="relative">
+                        <textarea id="outputContent" readonly
+                            class="w-full h-[500px] bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-300 font-mono text-sm focus:outline-none"></textarea>
+                        <button onclick="copyToClipboard()"
+                            class="absolute top-4 right-4 bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded text-xs transition">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let generatedAssets = {};
+
+        async function generateContent() {
+            const expertise = document.getElementById('expertise').value;
+            const tone = document.getElementById('tone').value;
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('btnSpinner');
+            const statusMsg = document.getElementById('statusMessage');
+            const resultsArea = document.getElementById('resultsArea');
+
+            if (!expertise || !tone) {
+                alert("Please provide both Expertise and Tone.");
+                return;
+            }
+
+            // UI Loading State
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.innerText = "Generating...";
+            spinner.classList.remove('hidden');
+            statusMsg.innerText = "Analyzing inputs and generating assets... This may take 1-2 minutes.";
+            statusMsg.classList.remove('hidden');
+            resultsArea.classList.add('hidden');
+
+            try {
+                // TODO: Replace with your Render URL after deployment (e.g., https://your-app.onrender.com/generate)
+                // For local testing, use: http://localhost:5000/generate
+                const API_URL = 'http://localhost:5000/generate';
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ expertise, tone })
+                });
+
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                generatedAssets = data.assets;
+
+                // Show Results
+                statusMsg.classList.add('hidden');
+                resultsArea.classList.remove('hidden');
+
+                // Default view
+                showTab('resource');
+
+            } catch (err) {
+                alert("Error: " + err.message);
+                statusMsg.innerText = "Generation failed. Is the local server running?";
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btnText.innerText = "Generate Assets";
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function showTab(tabName) {
+            // Update Tab UI
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-slate-800');
+                } else {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-slate-800');
+                }
+            });
+
+            // Update Content
+            const outputBox = document.getElementById('outputContent');
+
+            if (tabName === 'resource') outputBox.value = generatedAssets['resource_guide.md'] || '';
+            if (tabName === 'linkedin1') outputBox.value = generatedAssets['linkedin_post_1.txt'] || '';
+            if (tabName === 'linkedin2') outputBox.value = generatedAssets['linkedin_post_2.txt'] || '';
+            if (tabName === 'email1') outputBox.value = generatedAssets['nurture_email_1.txt'] || '';
+            if (tabName === 'email2') outputBox.value = generatedAssets['nurture_email_2.txt'] || '';
+        }
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("outputContent");
+            copyText.select();
+            document.execCommand("copy");
+            alert("Copied to clipboard!");
+        }
+    </script>
+</body>
+
+</html>
