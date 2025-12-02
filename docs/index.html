@@ -4,106 +4,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Content Employee</title>
+    <title>Kineticus | Content Architect</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['Space Grotesk', 'monospace'],
+                    },
+                    colors: {
+                        kinetic: {
+                            black: '#050505',
+                            dark: '#0A0A0A',
+                            panel: '#121212',
+                            blue: '#00A3FF', // Electric blue from image
+                            glow: '#0066FF',
+                        }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(0, 163, 255, 0.3)',
+                        'glow-strong': '0 0 40px rgba(0, 163, 255, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(0, 163, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 102, 255, 0.05) 0%, transparent 40%);
         }
 
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .input-field {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #00A3FF;
+            box-shadow: 0 0 15px rgba(0, 163, 255, 0.2);
+            outline: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00A3FF 0%, #0066FF 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 30px rgba(0, 163, 255, 0.4);
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::after {
+            left: 100%;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00A3FF;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #00A3FF;
+            color: #00A3FF;
         }
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-slate-100 p-8">
+<body class="min-h-screen text-slate-300 selection:bg-kinetic-blue selection:text-white">
 
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-12 text-center">
-            <h1
-                class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 mb-4">
-                AI Content Employee
-            </h1>
-            <p class="text-xl text-slate-300">Turn expertise into a content ecosystem.</p>
-        </header>
+    <div class="max-w-7xl mx-auto px-6 py-12">
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Input Section -->
-            <div class="glass rounded-2xl p-8 shadow-2xl">
-                <h2 class="text-2xl font-semibold mb-6 flex items-center">
-                    <span class="bg-blue-500 w-2 h-8 rounded mr-3"></span>
-                    Inputs
-                </h2>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Expertise / Transcript</label>
-                    <textarea id="expertise" rows="8"
-                        class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-                        placeholder="Paste transcript, notes, or raw expertise here..."></textarea>
+        <!-- Header -->
+        <header class="flex flex-col items-center justify-center mb-16 space-y-6">
+            <!-- Logo Placeholder -->
+            <div class="relative group">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-kinetic-blue to-kinetic-glow rounded-full opacity-25 group-hover:opacity-50 blur transition duration-1000 group-hover:duration-200">
                 </div>
-
-                <div class="mb-8">
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Tone of Voice Profile</label>
-                    <textarea id="tone" rows="6"
-                        class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-                        placeholder="Paste tone guide or writing samples..."></textarea>
-                </div>
-
-                <button id="generateBtn" onclick="generateContent()"
-                    class="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-[1.02] active:scale-95 flex justify-center items-center">
-                    <span id="btnText">Generate Assets</span>
-                    <svg id="btnSpinner" class="animate-spin ml-3 h-5 w-5 text-white hidden"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
-                </button>
+                <img src="assets/kineticus_logo_blue.png" alt="Kineticus" class="relative h-16 object-contain">
             </div>
 
-            <!-- Output Section -->
-            <div class="glass rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-                <h2 class="text-2xl font-semibold mb-6 flex items-center">
-                    <span class="bg-emerald-500 w-2 h-8 rounded mr-3"></span>
-                    Outputs
-                </h2>
+            <div class="text-center space-y-2">
+                <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                    Content <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-kinetic-blue to-white">Architect</span>
+                </h1>
+                <p class="text-slate-500 font-mono text-sm tracking-widest uppercase">AI-Powered Asset Generation System
+                </p>
+            </div>
+        </header>
 
-                <div id="statusMessage" class="text-slate-400 text-center mt-20">
-                    Ready to generate content.
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                <div id="resultsArea" class="hidden space-y-6">
-                    <!-- Tabs -->
-                    <div class="flex space-x-2 border-b border-slate-700 pb-2 overflow-x-auto">
-                        <button onclick="showTab('resource')"
-                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition active-tab"
-                            data-tab="resource">Resource Guide</button>
-                        <button onclick="showTab('linkedin1')"
-                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
-                            data-tab="linkedin1">LinkedIn #1</button>
-                        <button onclick="showTab('linkedin2')"
-                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
-                            data-tab="linkedin2">LinkedIn #2</button>
-                        <button onclick="showTab('email1')"
-                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
-                            data-tab="email1">Email #1</button>
-                        <button onclick="showTab('email2')"
-                            class="tab-btn px-4 py-2 rounded-lg bg-slate-800 text-sm hover:bg-slate-700 transition"
-                            data-tab="email2">Email #2</button>
+            <!-- Input Column -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-panel rounded-2xl p-1">
+                    <div class="bg-kinetic-panel/50 rounded-xl p-6 space-y-6">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-1 h-6 bg-kinetic-blue rounded-full shadow-glow"></div>
+                            <h2 class="text-xl font-semibold text-white">Directives</h2>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Source
+                                    Material</label>
+                                <textarea id="expertise" rows="10"
+                                    class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
+                                    placeholder="Paste transcript, raw notes, or expertise dump here..."></textarea>
+                            </div>
+
+                            <div>
+                                <label
+                                    class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Tone
+                                    Profile</label>
+                                <textarea id="tone" rows="6"
+                                    class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
+                                    placeholder="Describe the voice, style, and personality..."></textarea>
+                            </div>
+                        </div>
+
+                        <button id="generateBtn" onclick="generateContent()"
+                            class="btn-primary w-full py-4 rounded-lg text-white font-bold tracking-wide flex justify-center items-center group">
+                            <span id="btnText">INITIALIZE GENERATION</span>
+                            <svg id="btnSpinner" class="animate-spin ml-3 h-5 w-5 text-white hidden"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </button>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Content Display -->
-                    <div class="relative">
-                        <textarea id="outputContent" readonly
-                            class="w-full h-[500px] bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-300 font-mono text-sm focus:outline-none"></textarea>
-                        <button onclick="copyToClipboard()"
-                            class="absolute top-4 right-4 bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded text-xs transition">Copy</button>
+            <!-- Output Column -->
+            <div class="lg:col-span-7">
+                <div class="glass-panel rounded-2xl p-1 h-full min-h-[600px] flex flex-col">
+                    <div class="bg-kinetic-panel/50 rounded-xl p-6 flex-grow flex flex-col">
+
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-1 h-6 bg-white rounded-full"></div>
+                                <h2 class="text-xl font-semibold text-white">Generated Assets</h2>
+                            </div>
+                            <div id="statusIndicator" class="flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+                                <span class="text-xs font-mono text-slate-500 uppercase">System Idle</span>
+                            </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="statusMessage"
+                            class="flex-grow flex flex-col items-center justify-center text-center p-12 border border-dashed border-slate-800 rounded-xl">
+                            <div
+                                class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mb-4 shadow-inner">
+                                <svg class="w-8 h-8 text-slate-700" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3 class="text-slate-400 font-medium mb-2">Awaiting Input</h3>
+                            <p class="text-slate-600 text-sm max-w-xs">Enter source material and tone directives to
+                                begin the generation sequence.</p>
+                        </div>
+
+                        <!-- Results Area -->
+                        <div id="resultsArea" class="hidden flex-col h-full">
+                            <!-- Tabs -->
+                            <div class="flex space-x-6 border-b border-slate-800 mb-6 overflow-x-auto">
+                                <button onclick="showTab('resource')"
+                                    class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition tab-active"
+                                    data-tab="resource">Resource</button>
+                                <button onclick="showTab('linkedin1')"
+                                    class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
+                                    data-tab="linkedin1">LinkedIn 01</button>
+                                <button onclick="showTab('linkedin2')"
+                                    class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
+                                    data-tab="linkedin2">LinkedIn 02</button>
+                                <button onclick="showTab('email1')"
+                                    class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
+                                    data-tab="email1">Email 01</button>
+                                <button onclick="showTab('email2')"
+                                    class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
+                                    data-tab="email2">Email 02</button>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="relative flex-grow">
+                                <textarea id="outputContent" readonly
+                                    class="w-full h-full min-h-[500px] bg-kinetic-black border border-slate-800 rounded-xl p-6 text-slate-300 font-mono text-sm leading-relaxed focus:outline-none resize-none custom-scrollbar"></textarea>
+
+                                <button onclick="copyToClipboard()"
+                                    class="absolute top-4 right-4 bg-slate-800 hover:bg-kinetic-blue text-white p-2 rounded-lg transition shadow-lg group">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -121,6 +271,7 @@
             const spinner = document.getElementById('btnSpinner');
             const statusMsg = document.getElementById('statusMessage');
             const resultsArea = document.getElementById('resultsArea');
+            const statusIndicator = document.getElementById('statusIndicator');
 
             if (!expertise || !tone) {
                 alert("Please provide both Expertise and Tone.");
@@ -130,15 +281,17 @@
             // UI Loading State
             btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-not-allowed');
-            btnText.innerText = "Generating...";
+            btnText.innerText = "PROCESSING...";
             spinner.classList.remove('hidden');
-            statusMsg.innerText = "Analyzing inputs and generating assets... This may take 1-2 minutes.";
-            statusMsg.classList.remove('hidden');
+
+            statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-kinetic-blue animate-pulse"></span><span class="text-xs font-mono text-kinetic-blue uppercase">Generating Assets...</span>';
+
+            // Hide empty state if visible
+            statusMsg.classList.add('hidden');
             resultsArea.classList.add('hidden');
 
             try {
-                // TODO: Replace with your Render URL after deployment (e.g., https://your-app.onrender.com/generate)
-                // For local testing, use: http://localhost:5000/generate
+                // Live Backend URL
                 const API_URL = 'https://architect-fvli.onrender.com/generate';
 
                 const response = await fetch(API_URL, {
@@ -154,19 +307,22 @@
                 generatedAssets = data.assets;
 
                 // Show Results
-                statusMsg.classList.add('hidden');
                 resultsArea.classList.remove('hidden');
+                resultsArea.classList.add('flex');
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-xs font-mono text-emerald-500 uppercase">Complete</span>';
 
                 // Default view
                 showTab('resource');
 
             } catch (err) {
                 alert("Error: " + err.message);
-                statusMsg.innerText = "Generation failed. Is the local server running?";
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
+                statusMsg.classList.remove('hidden');
+                statusMsg.innerHTML = `<h3 class="text-red-400 font-medium mb-2">Generation Failed</h3><p class="text-slate-600 text-sm">${err.message}</p>`;
             } finally {
                 btn.disabled = false;
                 btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                btnText.innerText = "Generate Assets";
+                btnText.innerText = "INITIALIZE GENERATION";
                 spinner.classList.add('hidden');
             }
         }
@@ -175,11 +331,11 @@
             // Update Tab UI
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 if (btn.dataset.tab === tabName) {
-                    btn.classList.add('bg-blue-600', 'text-white');
-                    btn.classList.remove('bg-slate-800');
+                    btn.classList.add('tab-active', 'text-white');
+                    btn.classList.remove('text-slate-500');
                 } else {
-                    btn.classList.remove('bg-blue-600', 'text-white');
-                    btn.classList.add('bg-slate-800');
+                    btn.classList.remove('tab-active', 'text-white');
+                    btn.classList.add('text-slate-500');
                 }
             });
 
@@ -197,7 +353,7 @@
             const copyText = document.getElementById("outputContent");
             copyText.select();
             document.execCommand("copy");
-            alert("Copied to clipboard!");
+            // Optional: Show a toast notification here
         }
     </script>
 </body>
