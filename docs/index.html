@@ -292,166 +292,150 @@
             </div>
         </div>
     </div>
+    spinner.classList.remove('hidden');
 
-    <script>
-        let generatedAssets = {};
+    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-kinetic-blue animate-pulse"></span><span
+        class="text-xs font-mono text-kinetic-blue uppercase">Generating Assets...</span>';
 
-        async function generateContent() {
-            const expertise = document.getElementById('expertise').value;
-            const tone = document.getElementById('tone').value;
-            const btn = document.getElementById('generateBtn');
-            const btnText = document.getElementById('btnText');
-            const spinner = document.getElementById('btnSpinner');
-            const statusMsg = document.getElementById('statusMessage');
-            const resultsArea = document.getElementById('resultsArea');
-            const statusIndicator = document.getElementById('statusIndicator');
+    // Hide empty state if visible
+    statusMsg.classList.add('hidden');
+    resultsArea.classList.add('hidden');
 
-            if (!expertise || !tone) {
-                alert("Please provide both Expertise and Tone.");
-                return;
-            }
+    try {
+    // Live Backend URL
+    const API_URL = 'https://architect-fvli.onrender.com/generate';
 
-            // UI Loading State
-            btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
-            btnText.innerText = "PROCESSING...";
-            spinner.classList.remove('hidden');
+    const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ expertise, tone })
+    });
 
-            statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-kinetic-blue animate-pulse"></span><span class="text-xs font-mono text-kinetic-blue uppercase">Generating Assets...</span>';
+    const data = await response.json();
 
-            // Hide empty state if visible
-            statusMsg.classList.add('hidden');
-            resultsArea.classList.add('hidden');
+    if (data.error) throw new Error(data.error);
 
-            try {
-                // Live Backend URL
-                const API_URL = 'https://architect-fvli.onrender.com/generate';
+    generatedAssets = data.assets;
 
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ expertise, tone })
-                });
+    // Show Results
+    resultsArea.classList.remove('hidden');
+    resultsArea.classList.add('flex');
+    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span
+        class="text-xs font-mono text-emerald-500 uppercase">Complete</span>';
 
-                const data = await response.json();
+    // Default view
+    showTab('resource');
 
-                if (data.error) throw new Error(data.error);
+    } catch (err) {
+    alert("Error: " + err.message);
+    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span
+        class="text-xs font-mono text-red-500 uppercase">Error</span>';
+    statusMsg.classList.remove('hidden');
+    statusMsg.innerHTML = `<h3 class="text-red-400 font-medium mb-2">Generation Failed</h3>
+    <p class="text-slate-600 text-sm">${err.message}</p>`;
+    } finally {
+    btn.disabled = false;
+    btn.classList.remove('opacity-75', 'cursor-not-allowed');
+    btnText.innerText = "INITIALIZE GENERATION";
+    spinner.classList.add('hidden');
+    }
+    }
 
-                generatedAssets = data.assets;
+    function showTab(tabName) {
+    // Update Tab UI
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+    if (btn.dataset.tab === tabName) {
+    btn.classList.add('tab-active', 'text-white');
+    btn.classList.remove('text-slate-500');
+    } else {
+    btn.classList.remove('tab-active', 'text-white');
+    btn.classList.add('text-slate-500');
+    }
+    });
 
-                // Show Results
-                resultsArea.classList.remove('hidden');
-                resultsArea.classList.add('flex');
-                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-xs font-mono text-emerald-500 uppercase">Complete</span>';
+    // Update Content
+    const outputBox = document.getElementById('outputContent');
 
-                // Default view
-                showTab('resource');
+    if (tabName === 'resource') outputBox.value = generatedAssets['resource_guide.md'] || '';
+    if (tabName === 'linkedin1') outputBox.value = generatedAssets['linkedin_post_1.txt'] || '';
+    if (tabName === 'linkedin2') outputBox.value = generatedAssets['linkedin_post_2.txt'] || '';
+    if (tabName === 'email1') outputBox.value = generatedAssets['nurture_email_1.txt'] || '';
+    if (tabName === 'email2') outputBox.value = generatedAssets['nurture_email_2.txt'] || '';
+    if (tabName === 'research') outputBox.value = generatedAssets['research_content'] || '';
+    }
 
-            } catch (err) {
-                alert("Error: " + err.message);
-                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
-                statusMsg.classList.remove('hidden');
-                statusMsg.innerHTML = `<h3 class="text-red-400 font-medium mb-2">Generation Failed</h3><p class="text-slate-600 text-sm">${err.message}</p>`;
-            } finally {
-                btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                btnText.innerText = "INITIALIZE GENERATION";
-                spinner.classList.add('hidden');
-            }
-        }
+    async function performDeepResearch() {
+    const topic = document.getElementById('researchTopic').value;
+    const btn = document.getElementById('researchBtn');
+    const icon = document.getElementById('researchIcon');
+    const spinner = document.getElementById('researchSpinner');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const resultsArea = document.getElementById('resultsArea');
+    const statusMsg = document.getElementById('statusMessage');
 
-        function showTab(tabName) {
-            // Update Tab UI
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                if (btn.dataset.tab === tabName) {
-                    btn.classList.add('tab-active', 'text-white');
-                    btn.classList.remove('text-slate-500');
-                } else {
-                    btn.classList.remove('tab-active', 'text-white');
-                    btn.classList.add('text-slate-500');
-                }
-            });
+    if (!topic) {
+    alert("Please enter a research topic.");
+    return;
+    }
 
-            // Update Content
-            const outputBox = document.getElementById('outputContent');
+    // UI Loading State
+    btn.disabled = true;
+    btn.classList.add('opacity-75', 'cursor-not-allowed');
+    icon.classList.add('hidden');
+    spinner.classList.remove('hidden');
 
-            if (tabName === 'resource') outputBox.value = generatedAssets['resource_guide.md'] || '';
-            if (tabName === 'linkedin1') outputBox.value = generatedAssets['linkedin_post_1.txt'] || '';
-            if (tabName === 'linkedin2') outputBox.value = generatedAssets['linkedin_post_2.txt'] || '';
-            if (tabName === 'email1') outputBox.value = generatedAssets['nurture_email_1.txt'] || '';
-            if (tabName === 'email2') outputBox.value = generatedAssets['nurture_email_2.txt'] || '';
-            if (tabName === 'research') outputBox.value = generatedAssets['research_content'] || '';
-        }
+    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span><span
+        class="text-xs font-mono text-purple-500 uppercase">Researching...</span>';
 
-        async function performDeepResearch() {
-            const topic = document.getElementById('researchTopic').value;
-            const btn = document.getElementById('researchBtn');
-            const icon = document.getElementById('researchIcon');
-            const spinner = document.getElementById('researchSpinner');
-            const statusIndicator = document.getElementById('statusIndicator');
-            const resultsArea = document.getElementById('resultsArea');
-            const statusMsg = document.getElementById('statusMessage');
+    try {
+    const API_URL = 'https://architect-fvli.onrender.com/research';
 
-            if (!topic) {
-                alert("Please enter a research topic.");
-                return;
-            }
+    const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic })
+    });
 
-            // UI Loading State
-            btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
-            icon.classList.add('hidden');
-            spinner.classList.remove('hidden');
+    const data = await response.json();
 
-            statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span><span class="text-xs font-mono text-purple-500 uppercase">Researching...</span>';
+    if (data.error) throw new Error(data.error);
 
-            try {
-                const API_URL = 'https://architect-fvli.onrender.com/research';
+    // Store result
+    generatedAssets['research_content'] = data.research;
 
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ topic })
-                });
+    // Auto-populate Expertise Field
+    document.getElementById('expertise').value = data.research;
 
-                const data = await response.json();
+    // Show Results
+    statusMsg.classList.add('hidden');
+    resultsArea.classList.remove('hidden');
+    resultsArea.classList.add('flex');
 
-                if (data.error) throw new Error(data.error);
+    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500"></span><span
+        class="text-xs font-mono text-purple-500 uppercase">Research Complete & Applied</span>';
 
-                // Store result
-                generatedAssets['research_content'] = data.research;
+    // Switch to research tab
+    showTab('research');
 
-                // Auto-populate Expertise Field
-                document.getElementById('expertise').value = data.research;
-
-                // Show Results
-                statusMsg.classList.add('hidden');
-                resultsArea.classList.remove('hidden');
-                resultsArea.classList.add('flex');
-
-                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500"></span><span class="text-xs font-mono text-purple-500 uppercase">Research Complete & Applied</span>';
-
-                // Switch to research tab
-                showTab('research');
-
-            } catch (err) {
-                alert("Research Error: " + err.message);
-                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
-            } finally {
-                btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                icon.classList.remove('hidden');
-                spinner.classList.add('hidden');
-            }
-        }
+    } catch (err) {
+    alert("Research Error: " + err.message);
+    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span
+        class="text-xs font-mono text-red-500 uppercase">Error</span>';
+    } finally {
+    btn.disabled = false;
+    btn.classList.remove('opacity-75', 'cursor-not-allowed');
+    icon.classList.remove('hidden');
+    spinner.classList.add('hidden');
+    }
+    }
 
 
-        function copyToClipboard() {
-            const copyText = document.getElementById("outputContent");
-            copyText.select();
-            document.execCommand("copy");
-            // Optional: Show a toast notification here
-        }
+    function copyToClipboard() {
+    const copyText = document.getElementById("outputContent");
+    copyText.select();
+    document.execCommand("copy");
+    // Optional: Show a toast notification here
+    }
     </script>
 </body>
 
