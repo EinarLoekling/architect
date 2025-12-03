@@ -218,6 +218,7 @@ class ContentEmployee:
         
         models_to_try = ['gemini-3-pro-preview', 'gemini-1.5-pro-latest', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro']
         
+        last_error = None
         for model_name in models_to_try:
             try:
                 print(f"Attempting deep research with model: {model_name}")
@@ -247,9 +248,10 @@ class ContentEmployee:
                 
             except Exception as e:
                 print(f"Model {model_name} failed: {e}")
+                last_error = e
                 continue
 
-        return "Error: All Gemini models failed to generate content. Please check your API key and available models."
+        return f"Error: All Gemini models failed. Last error: {str(last_error)}"
 
     def save_file(self, content: str, filename: str):
         path = self.run_dir / filename
