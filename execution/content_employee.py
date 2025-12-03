@@ -216,7 +216,7 @@ class ContentEmployee:
 
         print(f"Performing Deep Research on: {topic}")
         
-        models_to_try = ['gemini-1.5-pro-latest', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro']
+        models_to_try = ['gemini-3-pro-preview', 'gemini-1.5-pro-latest', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro']
         
         for model_name in models_to_try:
             try:
