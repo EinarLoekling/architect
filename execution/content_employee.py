@@ -231,16 +231,21 @@ class ContentEmployee:
                 You are an expert researcher with access to Google Search. 
                 Conduct a deep dive research on the following topic: "{topic}".
                 
-                Use Google Search to find the latest, most accurate, and detailed information.
+                **CRITICAL INSTRUCTION**: Do not provide a generic summary. You must find and cite **specific, high-value signals**.
                 
-                Provide a comprehensive summary including:
-                1. Key Concepts & Definitions
-                2. Current Trends & Developments (Cite specific recent events/reports)
-                3. Major Challenges & Opportunities
-                4. Notable Figures or Companies
-                5. Future Outlook
+                Use Google Search to find:
+                1. **Hard Data & Statistics**: Recent market sizing, growth rates, or survey results (with dates).
+                2. **Expert Quotes**: Direct quotes from industry leaders, CTOs, or researchers.
+                3. **Primary Sources**: Prioritize PDF reports, white papers, and academic journals over SEO blogs.
+                4. **Contrarian Views**: What are the counter-arguments or overlooked risks?
                 
-                Format the output in Markdown. Be detailed, authoritative, and cite your sources where possible.
+                Provide a comprehensive report including:
+                - **Executive Summary**: The "So What?" for a B2B decision maker.
+                - **Key Trends (Backed by Data)**: Cite specific numbers.
+                - **Major Players & Innovators**: Who is winning and why?
+                - **Future Outlook (12-24 months)**: Based on expert projections.
+                
+                Format the output in Markdown. Use bolding for key stats. **Cite every claim with a [Source Name]**.
                 """
                 
                 response = model.generate_content(prompt)
