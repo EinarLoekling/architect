@@ -287,399 +287,188 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        ::-webkit-scrollbar-track {
-                        background: #0A0A0A;
-                        }
+    <script>
+        let generatedAssets = {};
 
-                        ::-webkit-scrollbar-thumb {
-                        background: #333;
-                        border-radius: 4px;
-                        }
+        async function generateContent() {
+            let expertise = document.getElementById('expertise').value;
+            const tone = document.getElementById('tone').value;
+            const researchTopic = document.getElementById('researchTopic').value;
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('btnSpinner');
+            const statusMsg = document.getElementById('statusMessage');
+            const resultsArea = document.getElementById('resultsArea');
+            const statusIndicator = document.getElementById('statusIndicator');
 
-                        ::-webkit-scrollbar-thumb:hover {
-                        background: #00A3FF;
-                        }
+            // Auto-trigger Research if needed
+            if (!expertise && researchTopic) {
+                // Show temporary status
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span><span class="text-xs font-mono text-purple-500 uppercase">Auto-Researching...</span>';
 
-                        .tab-active {
-                        border-bottom: 2px solid #00A3FF;
-                        color: #00A3FF;
-                        }
-                        </style>
-                        </head>
+                try {
+                    await performDeepResearch();
+                    // Refresh expertise value after research completes
+                    expertise = document.getElementById('expertise').value;
+                } catch (err) {
+                    console.error("Auto-research failed", err);
+                    // Alert handled in performDeepResearch, but we stop here
+                    return;
+                }
+            }
 
-                        <body class="min-h-screen text-slate-300 selection:bg-kinetic-blue selection:text-white">
+            if (!expertise || !tone) {
+                alert("Please provide both Expertise (or a Research Topic) and Tone.");
+                return;
+            }
 
-                            <div class="max-w-7xl mx-auto px-6 py-12">
+            // UI Loading State
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.innerText = "PROCESSING...";
+            spinner.classList.remove('hidden');
 
-                                <!-- Header -->
-                                <header class="flex flex-col items-center justify-center mb-16 space-y-6">
-                                    <!-- Logo Placeholder -->
-                                    <div class="relative group">
-                                        <div
-                                            class="absolute -inset-1 bg-gradient-to-r from-kinetic-blue to-kinetic-glow rounded-full opacity-25 group-hover:opacity-50 blur transition duration-1000 group-hover:duration-200">
-                                        </div>
-                                        <img src="assets/kineticus_logo_blue.png" alt="Kineticus"
-                                            class="relative h-16 object-contain">
-                                    </div>
+            statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-kinetic-blue animate-pulse"></span><span class="text-xs font-mono text-kinetic-blue uppercase">Generating Assets...</span>';
 
-                                    <div class="text-center space-y-2">
-                                        <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight">
-                                            Content <span
-                                                class="text-transparent bg-clip-text bg-gradient-to-r from-kinetic-blue to-white">Architect</span>
-                                        </h1>
-                                        <p class="text-slate-500 font-mono text-sm tracking-widest uppercase">AI-Powered
-                                            Asset Generation System
-                                        </p>
-                                    </div>
-                                </header>
+            // Hide empty state if visible
+            statusMsg.classList.add('hidden');
+            resultsArea.classList.add('hidden');
 
-                                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            try {
+                // Live Backend URL
+                const API_URL = 'https://architect-fvli.onrender.com/generate';
 
-                                    <!-- Input Column -->
-                                    <div class="lg:col-span-5 space-y-6">
-                                        <div class="glass-panel rounded-2xl p-1">
-                                            <div class="bg-kinetic-panel/50 rounded-xl p-6 space-y-6">
-                                                <div class="flex items-center space-x-3 mb-2">
-                                                    <div class="w-1 h-6 bg-kinetic-blue rounded-full shadow-glow"></div>
-                                                    <h2 class="text-xl font-semibold text-white">Directives</h2>
-                                                </div>
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ expertise, tone })
+                });
 
-                                                <div class="space-y-4">
-                                                    <div>
-                                                        <label
-                                                            class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Source
-                                                            Material</label>
-                                                        <textarea id="expertise" rows="10"
-                                                            class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
-                                                            placeholder="Paste transcript, raw notes, or expertise dump here..."></textarea>
+                const data = await response.json();
 
-                                                        <!-- Deep Research Integration -->
-                                                        <div class="mt-3 pt-3 border-t border-slate-800/50">
-                                                            <label
-                                                                class="block text-xs font-mono text-purple-400 mb-2 uppercase tracking-wider">Or
-                                                                use Deep Research as your raw material</label>
-                                                            <div class="flex space-x-2">
-                                                                <input id="researchTopic" type="text"
-                                                                    class="input-field flex-grow rounded-lg p-3 text-sm text-slate-200 placeholder-slate-600 font-sans"
-                                                                    placeholder="Enter topic to research (e.g. Future of Agentic AI)...">
-                                                                <button id="researchBtn" onclick="performDeepResearch()"
-                                                                    class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-lg transition shadow-lg flex items-center justify-center group"
-                                                                    title="Research and populate Source Material">
-                                                                    <svg id="researchIcon"
-                                                                        class="w-5 h-5 group-hover:scale-110 transition-transform"
-                                                                        fill="none" stroke="currentColor"
-                                                                        viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z">
-                                                                        </path>
-                                                                    </svg>
-                                                                    <svg id="researchSpinner"
-                                                                        class="animate-spin h-5 w-5 text-white hidden"
-                                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                        viewBox="0 0 24 24">
-                                                                        <circle class="opacity-25" cx="12" cy="12"
-                                                                            r="10" stroke="currentColor"
-                                                                            stroke-width="4"></circle>
-                                                                        <path class="opacity-75" fill="currentColor"
-                                                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                                                        </path>
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                if (data.error) throw new Error(data.error);
 
-                                                    <div>
-                                                        <label
-                                                            class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Tone
-                                                            Profile</label>
-                                                        <textarea id="tone" rows="6"
-                                                            class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
-                                                            placeholder="Describe the voice, style, and personality..."></textarea>
-                                                    </div>
-                                                </div>
+                generatedAssets = data.assets;
 
-                                                <button id="generateBtn" onclick="generateContent()"
-                                                    class="btn-primary w-full py-4 rounded-lg text-white font-bold tracking-wide flex justify-center items-center group">
-                                                    <span id="btnText">INITIALIZE GENERATION</span>
-                                                    <svg id="btnSpinner"
-                                                        class="animate-spin ml-3 h-5 w-5 text-white hidden"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24">
-                                                        <circle class="opacity-25" cx="12" cy="12" r="10"
-                                                            stroke="currentColor" stroke-width="4"></circle>
-                                                        <path class="opacity-75" fill="currentColor"
-                                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                                        </path>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                // Show Results
+                resultsArea.classList.remove('hidden');
+                resultsArea.classList.add('flex');
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-xs font-mono text-emerald-500 uppercase">Complete</span>';
 
-                                    <!-- Output Column -->
-                                    <div class="lg:col-span-7">
-                                        <div class="glass-panel rounded-2xl p-1 h-full min-h-[600px] flex flex-col">
-                                            <div class="bg-kinetic-panel/50 rounded-xl p-6 flex-grow flex flex-col">
+                // Default view
+                showTab('resource');
 
-                                                <div class="flex items-center justify-between mb-6">
-                                                    <div class="flex items-center space-x-3">
-                                                        <div class="w-1 h-6 bg-white rounded-full"></div>
-                                                        <h2 class="text-xl font-semibold text-white">Generated Assets
-                                                        </h2>
-                                                    </div>
-                                                    <div id="statusIndicator" class="flex items-center space-x-2">
-                                                        <span class="w-2 h-2 rounded-full bg-slate-600"></span>
-                                                        <span class="text-xs font-mono text-slate-500 uppercase">System
-                                                            Idle</span>
-                                                    </div>
-                                                </div>
+            } catch (err) {
+                alert("Error: " + err.message);
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
+                statusMsg.classList.remove('hidden');
+                statusMsg.innerHTML = `<h3 class="text-red-400 font-medium mb-2">Generation Failed</h3><p class="text-slate-600 text-sm">${err.message}</p>`;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btnText.innerText = "INITIALIZE GENERATION";
+                spinner.classList.add('hidden');
+            }
+        }
 
-                                                <!-- Empty State -->
-                                                <div id="statusMessage"
-                                                    class="flex-grow flex flex-col items-center justify-center text-center p-12 border border-dashed border-slate-800 rounded-xl">
-                                                    <div
-                                                        class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mb-4 shadow-inner">
-                                                        <svg class="w-8 h-8 text-slate-700" fill="none"
-                                                            stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-                                                            </path>
-                                                        </svg>
-                                                    </div>
-                                                    <h3 class="text-slate-400 font-medium mb-2">Awaiting Input</h3>
-                                                    <p class="text-slate-600 text-sm max-w-xs">Enter source material and
-                                                        tone directives to
-                                                        begin the generation sequence.</p>
-                                                </div>
+        function showTab(tabName) {
+            // Update Tab UI
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('tab-active', 'text-white');
+                    btn.classList.remove('text-slate-500');
+                } else {
+                    btn.classList.remove('tab-active', 'text-white');
+                    btn.classList.add('text-slate-500');
+                }
+            });
 
-                                                <!-- Results Area -->
-                                                <div id="resultsArea" class="hidden flex-col h-full">
-                                                    <!-- Tabs -->
-                                                    <div
-                                                        class="flex space-x-6 border-b border-slate-800 mb-6 overflow-x-auto">
-                                                        <button onclick="showTab('resource')"
-                                                            class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition tab-active"
-                                                            data-tab="resource">Resource</button>
-                                                        <button onclick="showTab('linkedin1')"
-                                                            class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
-                                                            data-tab="linkedin1">LinkedIn 01</button>
-                                                        <button onclick="showTab('linkedin2')"
-                                                            class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
-                                                            data-tab="linkedin2">LinkedIn 02</button>
-                                                        <button onclick="showTab('email1')"
-                                                            class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
-                                                            data-tab="email1">Email 01</button>
-                                                        <button onclick="showTab('email2')"
-                                                            class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
-                                                            data-tab="email2">Email 02</button>
-                                                        <button onclick="showTab('research')"
-                                                            class="tab-btn pb-3 text-sm font-medium text-purple-400 hover:text-purple-300 transition"
-                                                            data-tab="research">Deep Research</button>
-                                                    </div>
+            // Update Content
+            const outputBox = document.getElementById('outputContent');
 
-                                                    <!-- Content -->
-                                                    <div class="relative flex-grow">
-                                                        <textarea id="outputContent" readonly
-                                                            class="w-full h-full min-h-[500px] bg-kinetic-black border border-slate-800 rounded-xl p-6 text-slate-300 font-mono text-sm leading-relaxed focus:outline-none resize-none custom-scrollbar"></textarea>
+            if (tabName === 'resource') outputBox.value = generatedAssets['resource_guide.md'] || '';
+            if (tabName === 'linkedin1') outputBox.value = generatedAssets['linkedin_post_1.txt'] || '';
+            if (tabName === 'linkedin2') outputBox.value = generatedAssets['linkedin_post_2.txt'] || '';
+            if (tabName === 'email1') outputBox.value = generatedAssets['nurture_email_1.txt'] || '';
+            if (tabName === 'email2') outputBox.value = generatedAssets['nurture_email_2.txt'] || '';
+            if (tabName === 'research') outputBox.value = generatedAssets['research_content'] || '';
+        }
 
-                                                        <button onclick="copyToClipboard()"
-                                                            class="absolute top-4 right-4 bg-slate-800 hover:bg-kinetic-blue text-white p-2 rounded-lg transition shadow-lg group">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                                viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3">
-                                                                </path>
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
+        async function performDeepResearch() {
+            const topic = document.getElementById('researchTopic').value;
+            const btn = document.getElementById('researchBtn');
+            const icon = document.getElementById('researchIcon');
+            const spinner = document.getElementById('researchSpinner');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const resultsArea = document.getElementById('resultsArea');
+            const statusMsg = document.getElementById('statusMessage');
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
-                                let generatedAssets = {};
+            if (!topic) {
+                alert("Please enter a research topic.");
+                return;
+            }
 
-                                async function generateContent() {
-                                    let expertise = document.getElementById('expertise').value;
-                                    const tone = document.getElementById('tone').value;
-                                    const researchTopic = document.getElementById('researchTopic').value;
-                                    const btn = document.getElementById('generateBtn');
-                                    const btnText = document.getElementById('btnText');
-                                    const spinner = document.getElementById('btnSpinner');
-                                    const statusMsg = document.getElementById('statusMessage');
-                                    const resultsArea = document.getElementById('resultsArea');
-                                    const statusIndicator = document.getElementById('statusIndicator');
+            // UI Loading State
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            icon.classList.add('hidden');
+            spinner.classList.remove('hidden');
 
-                                    // Auto-trigger Research if needed
-                                    if (!expertise && researchTopic) {
-                                        // Show temporary status
-                                        statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span><span class="text-xs font-mono text-purple-500 uppercase">Auto-Researching...</span>';
+            statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span><span class="text-xs font-mono text-purple-500 uppercase">Researching...</span>';
 
-                                        try {
-                                            await performDeepResearch();
-                                            // Refresh expertise value after research completes
-                                            expertise = document.getElementById('expertise').value;
-                                        } catch (err) {
-                                            console.error("Auto-research failed", err);
-                                            // Alert handled in performDeepResearch, but we stop here
-                                            return;
-                                        }
-                                    }
+            try {
+                const API_URL = 'https://architect-fvli.onrender.com/research';
 
-                                    if (!expertise || !tone) {
-                                        alert("Please provide both Expertise (or a Research Topic) and Tone.");
-                                        return;
-                                    }
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic })
+                });
 
-                                    // UI Loading State
-                                    btn.disabled = true;
-                                    btn.classList.add('opacity-75', 'cursor-not-allowed');
-                                    btnText.innerText = "PROCESSING...";
-                                    spinner.classList.remove('hidden');
+                const data = await response.json();
 
-                                    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-kinetic-blue animate-pulse"></span><span class="text-xs font-mono text-kinetic-blue uppercase">Generating Assets...</span>';
+                if (data.error) throw new Error(data.error);
 
-                                    // Hide empty state if visible
-                                    statusMsg.classList.add('hidden');
-                                    resultsArea.classList.add('hidden');
+                // Store result
+                generatedAssets['research_content'] = data.research;
 
-                                    try {
-                                        // Live Backend URL
-                                        const API_URL = 'https://architect-fvli.onrender.com/generate';
+                // Auto-populate Expertise Field
+                document.getElementById('expertise').value = data.research;
 
-                                        const response = await fetch(API_URL, {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({ expertise, tone })
-                                        });
+                // Show Results
+                statusMsg.classList.add('hidden');
+                resultsArea.classList.remove('hidden');
+                resultsArea.classList.add('flex');
 
-                                        const data = await response.json();
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500"></span><span class="text-xs font-mono text-purple-500 uppercase">Research Complete & Applied</span>';
 
-                                        if (data.error) throw new Error(data.error);
+                // Switch to research tab
+                showTab('research');
 
-                                        generatedAssets = data.assets;
+            } catch (err) {
+                alert("Research Error: " + err.message);
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                icon.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            }
+        }
 
-                                        // Show Results
-                                        resultsArea.classList.remove('hidden');
-                                        resultsArea.classList.add('flex');
-                                        statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-xs font-mono text-emerald-500 uppercase">Complete</span>';
-
-                                        // Default view
-                                        showTab('resource');
-
-                                    } catch (err) {
-                                        alert("Error: " + err.message);
-                                        statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
-                                        statusMsg.classList.remove('hidden');
-                                        statusMsg.innerHTML = `<h3 class="text-red-400 font-medium mb-2">Generation Failed</h3><p class="text-slate-600 text-sm">${err.message}</p>`;
-                                    } finally {
-                                        btn.disabled = false;
-                                        btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                                        btnText.innerText = "INITIALIZE GENERATION";
-                                        spinner.classList.add('hidden');
-                                    }
-                                }
-
-                                function showTab(tabName) {
-                                    // Update Tab UI
-                                    document.querySelectorAll('.tab-btn').forEach(btn => {
-                                        if (btn.dataset.tab === tabName) {
-                                            btn.classList.add('tab-active', 'text-white');
-                                            btn.classList.remove('text-slate-500');
-                                        } else {
-                                            btn.classList.remove('tab-active', 'text-white');
-                                            btn.classList.add('text-slate-500');
-                                        }
-                                    });
-
-                                    // Update Content
-                                    const outputBox = document.getElementById('outputContent');
-
-                                    if (tabName === 'resource') outputBox.value = generatedAssets['resource_guide.md'] || '';
-                                    if (tabName === 'linkedin1') outputBox.value = generatedAssets['linkedin_post_1.txt'] || '';
-                                    if (tabName === 'linkedin2') outputBox.value = generatedAssets['linkedin_post_2.txt'] || '';
-                                    if (tabName === 'email1') outputBox.value = generatedAssets['nurture_email_1.txt'] || '';
-                                    if (tabName === 'email2') outputBox.value = generatedAssets['nurture_email_2.txt'] || '';
-                                    if (tabName === 'research') outputBox.value = generatedAssets['research_content'] || '';
-                                }
-
-                                async function performDeepResearch() {
-                                    const topic = document.getElementById('researchTopic').value;
-                                    const btn = document.getElementById('researchBtn');
-                                    const icon = document.getElementById('researchIcon');
-                                    const spinner = document.getElementById('researchSpinner');
-                                    const statusIndicator = document.getElementById('statusIndicator');
-                                    const resultsArea = document.getElementById('resultsArea');
-                                    const statusMsg = document.getElementById('statusMessage');
-
-                                    if (!topic) {
-                                        alert("Please enter a research topic.");
-                                        return;
-                                    }
-
-                                    // UI Loading State
-                                    btn.disabled = true;
-                                    btn.classList.add('opacity-75', 'cursor-not-allowed');
-                                    icon.classList.add('hidden');
-                                    spinner.classList.remove('hidden');
-
-                                    statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span><span class="text-xs font-mono text-purple-500 uppercase">Researching...</span>';
-
-                                    try {
-                                        const API_URL = 'https://architect-fvli.onrender.com/research';
-
-                                        const response = await fetch(API_URL, {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({ topic })
-                                        });
-
-                                        const data = await response.json();
-
-                                        if (data.error) throw new Error(data.error);
-
-                                        // Store result
-                                        generatedAssets['research_content'] = data.research;
-
-                                        // Auto-populate Expertise Field
-                                        document.getElementById('expertise').value = data.research;
-
-                                        // Show Results
-                                        statusMsg.classList.add('hidden');
-                                        resultsArea.classList.remove('hidden');
-                                        resultsArea.classList.add('flex');
-
-                                        statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500"></span><span class="text-xs font-mono text-purple-500 uppercase">Research Complete & Applied</span>';
-
-                                        // Switch to research tab
-                                        showTab('research');
-
-                                    } catch (err) {
-                                        alert("Research Error: " + err.message);
-                                        statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
-                                    } finally {
-                                        btn.disabled = false;
-                                        btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                                        icon.classList.remove('hidden');
-                                        spinner.classList.add('hidden');
-                                    }
-                                }
-
-                                function copyToClipboard() {
-                                    const copyText = document.getElementById("outputContent");
-                                    copyText.select();
-                                    document.execCommand("copy");
-                                    // Optional: Show a toast notification here
-                                }
-                            </script>
-                        </body>
+        function copyToClipboard() {
+            const copyText = document.getElementById("outputContent");
+            copyText.select();
+            document.execCommand("copy");
+            // Optional: Show a toast notification here
+        }
+    </script>
+</body>
 
 </html>
