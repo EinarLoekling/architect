@@ -263,9 +263,6 @@
                                 <button onclick="showTab('email2')"
                                     class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
                                     data-tab="email2">Email 02</button>
-                                <button onclick="showTab('research')"
-                                    class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
-                                    data-tab="research">Deep Research</button>
                             </div>
 
                             <!-- Content -->
@@ -394,7 +391,6 @@
             if (tabName === 'linkedin2') outputBox.value = generatedAssets['linkedin_post_2.txt'] || '';
             if (tabName === 'email1') outputBox.value = generatedAssets['nurture_email_1.txt'] || '';
             if (tabName === 'email2') outputBox.value = generatedAssets['nurture_email_2.txt'] || '';
-            if (tabName === 'research') outputBox.value = generatedAssets['research_content'] || '';
         }
 
         async function performDeepResearch() {
@@ -444,9 +440,6 @@
                 resultsArea.classList.add('flex');
 
                 statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-kinetic-blue"></span><span class="text-xs font-mono text-kinetic-blue uppercase">Research Complete & Applied</span>';
-
-                // Switch to research tab
-                showTab('research');
 
             } catch (err) {
                 alert("Research Error: " + err.message);
