@@ -43,6 +43,33 @@ def generate_content():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
+@app.route('/research', methods=['POST'])
+def deep_research():
+    try:
+        data = request.json
+        topic = data.get('topic')
+        
+        if not topic:
+            return jsonify({"error": "Missing topic"}), 400
+
+        print(f"Received research request for: {topic}")
+        
+        # Initialize Employee
+        employee = ContentEmployee()
+        
+        # Run research
+        research_content = employee.perform_deep_research(topic)
+        
+        return jsonify({
+            "status": "success",
+            "research": research_content
+        })
+
+    except Exception as e:
+        print(f"Error: {e}")
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)

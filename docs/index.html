@@ -168,6 +168,42 @@
                             </div>
                         </div>
 
+                        <!-- Deep Research Section -->
+                        <div class="pt-4 border-t border-slate-800">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-1 h-6 bg-purple-500 rounded-full shadow-glow"></div>
+                                <h2 class="text-xl font-semibold text-white">Deep Research</h2>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label
+                                        class="block text-xs font-mono text-purple-400 mb-2 uppercase tracking-wider">Research
+                                        Topic</label>
+                                    <div class="flex space-x-2">
+                                        <input id="researchTopic" type="text"
+                                            class="input-field flex-grow rounded-lg p-3 text-sm text-slate-200 placeholder-slate-600 font-sans"
+                                            placeholder="e.g. Future of Agentic AI">
+                                        <button id="researchBtn" onclick="performDeepResearch()"
+                                            class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-lg transition shadow-lg flex items-center justify-center">
+                                            <svg id="researchIcon" class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                            </svg>
+                                            <svg id="researchSpinner" class="animate-spin h-5 w-5 text-white hidden"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <button id="generateBtn" onclick="generateContent()"
                             class="btn-primary w-full py-4 rounded-lg text-white font-bold tracking-wide flex justify-center items-center group">
                             <span id="btnText">INITIALIZE GENERATION</span>
@@ -236,6 +272,9 @@
                                 <button onclick="showTab('email2')"
                                     class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-white transition"
                                     data-tab="email2">Email 02</button>
+                                <button onclick="showTab('research')"
+                                    class="tab-btn pb-3 text-sm font-medium text-purple-400 hover:text-purple-300 transition"
+                                    data-tab="research">Deep Research</button>
                             </div>
 
                             <!-- Content -->
@@ -347,7 +386,68 @@
             if (tabName === 'linkedin2') outputBox.value = generatedAssets['linkedin_post_2.txt'] || '';
             if (tabName === 'email1') outputBox.value = generatedAssets['nurture_email_1.txt'] || '';
             if (tabName === 'email2') outputBox.value = generatedAssets['nurture_email_2.txt'] || '';
+            if (tabName === 'research') outputBox.value = generatedAssets['research_content'] || '';
         }
+
+        async function performDeepResearch() {
+            const topic = document.getElementById('researchTopic').value;
+            const btn = document.getElementById('researchBtn');
+            const icon = document.getElementById('researchIcon');
+            const spinner = document.getElementById('researchSpinner');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const resultsArea = document.getElementById('resultsArea');
+            const statusMsg = document.getElementById('statusMessage');
+
+            if (!topic) {
+                alert("Please enter a research topic.");
+                return;
+            }
+
+            // UI Loading State
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            icon.classList.add('hidden');
+            spinner.classList.remove('hidden');
+
+            statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span><span class="text-xs font-mono text-purple-500 uppercase">Researching...</span>';
+
+            try {
+                const API_URL = 'https://architect-fvli.onrender.com/research';
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic })
+                });
+
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                // Store result
+                generatedAssets['research_content'] = data.research;
+
+                // Show Results
+                statusMsg.classList.add('hidden');
+                resultsArea.classList.remove('hidden');
+                resultsArea.classList.add('flex');
+
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-500"></span><span class="text-xs font-mono text-purple-500 uppercase">Research Complete</span>';
+
+                // Switch to research tab
+                showTab('research');
+
+            } catch (err) {
+                alert("Research Error: " + err.message);
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                icon.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            }
+        }
+
 
         function copyToClipboard() {
             const copyText = document.getElementById("outputContent");

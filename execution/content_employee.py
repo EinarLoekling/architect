@@ -6,6 +6,7 @@ import requests
 from pathlib import Path
 from dotenv import load_dotenv
 import anthropic
+import google.generativeai as genai
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
@@ -18,6 +19,12 @@ class ContentEmployee:
         if not self.api_key:
             raise ValueError("ANTHROPIC_API_KEY not found in .env file")
         
+        self.google_api_key = os.getenv("GOOGLE_API_KEY")
+        if self.google_api_key:
+            genai.configure(api_key=self.google_api_key)
+        else:
+            print("Warning: GOOGLE_API_KEY not found. Deep Research will not work.")
+
         self.client = anthropic.Anthropic(api_key=self.api_key)
         self.model = "claude-sonnet-4-20250514"
         self.output_dir = Path(__file__).parent.parent / "outputs"
@@ -201,6 +208,42 @@ class ContentEmployee:
             assets[filename] = email
             
         return assets
+
+    def perform_deep_research(self, topic: str) -> str:
+        """Performs deep research on a topic using Gemini."""
+        if not self.google_api_key:
+            return "Error: GOOGLE_API_KEY not configured."
+
+        print(f"Performing Deep Research on: {topic}")
+        
+        try:
+            model = genai.GenerativeModel('gemini-1.5-pro')
+            
+            prompt = f"""
+            You are an expert researcher. Conduct a deep dive research on the following topic: "{topic}".
+            
+            Provide a comprehensive summary including:
+            1. Key Concepts & Definitions
+            2. Current Trends & Developments
+            3. Major Challenges & Opportunities
+            4. Notable Figures or Companies
+            5. Future Outlook
+            
+            Format the output in Markdown. Be detailed and authoritative.
+            """
+            
+            response = model.generate_content(prompt)
+            content = response.text
+            
+            # Save the research
+            filename = f"deep_research_{int(time.time())}.md"
+            self.save_file(content, filename)
+            
+            return content
+            
+        except Exception as e:
+            print(f"Deep Research failed: {e}")
+            return f"Error during deep research: {str(e)}"
 
     def save_file(self, content: str, filename: str):
         path = self.run_dir / filename
