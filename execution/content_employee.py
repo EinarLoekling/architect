@@ -224,41 +224,51 @@ class ContentEmployee:
                 print(f"Attempting deep research with model: {model_name}")
                 
                 # Configure tools for Google Search Grounding
-                tools = [{'google_search': {}}]
-                model = genai.GenerativeModel(model_name, tools=tools)
+                # Try 'google_search_retrieval' which is the correct field for the API
+                tools = [{'google_search_retrieval': {}}]
                 
-                prompt = f"""
-                You are an expert researcher with access to Google Search. 
-                Conduct a deep dive research on the following topic: "{topic}".
-                
-                **CRITICAL INSTRUCTION**: Do not provide a generic summary. You must find and cite **specific, high-value signals**.
-                
-                Use Google Search to find:
-                1. **Hard Data & Statistics**: Recent market sizing, growth rates, or survey results (with dates).
-                2. **Expert Quotes**: Direct quotes from industry leaders, CTOs, or researchers.
-                3. **Primary Sources**: Prioritize PDF reports, white papers, and academic journals over SEO blogs.
-                4. **Contrarian Views**: What are the counter-arguments or overlooked risks?
-                
-                Provide a comprehensive report including:
-                - **Executive Summary**: The "So What?" for a B2B decision maker.
-                - **Key Trends (Backed by Data)**: Cite specific numbers.
-                - **Major Players & Innovators**: Who is winning and why?
-                - **Future Outlook (12-24 months)**: Based on expert projections.
-                
-                Format the output in Markdown. Use bolding for key stats. **Cite every claim with a [Source Name]**.
-                """
-                
-                response = model.generate_content(prompt)
-                
-                # Extract text from response (handling potential grounding metadata)
-                content = response.text
-                
-                # Save the research
-                filename = f"deep_research_{int(time.time())}.md"
-                self.save_file(content, filename)
-                
-                return content
-                
+                try:
+                    model = genai.GenerativeModel(model_name, tools=tools)
+                    
+                    prompt = f"""
+                    You are an expert researcher with access to Google Search. 
+                    Conduct a deep dive research on the following topic: "{topic}".
+                    
+                    **CRITICAL INSTRUCTION**: Do not provide a generic summary. You must find and cite **specific, high-value signals**.
+                    
+                    Use Google Search to find:
+                    1. **Hard Data & Statistics**: Recent market sizing, growth rates, or survey results (with dates).
+                    2. **Expert Quotes**: Direct quotes from industry leaders, CTOs, or researchers.
+                    3. **Primary Sources**: Prioritize PDF reports, white papers, and academic journals over SEO blogs.
+                    4. **Contrarian Views**: What are the counter-arguments or overlooked risks?
+                    
+                    Provide a comprehensive report including:
+                    - **Executive Summary**: The "So What?" for a B2B decision maker.
+                    - **Key Trends (Backed by Data)**: Cite specific numbers.
+                    - **Major Players & Innovators**: Who is winning and why?
+                    - **Future Outlook (12-24 months)**: Based on expert projections.
+                    
+                    Format the output in Markdown. Use bolding for key stats. **Cite every claim with a [Source Name]**.
+                    """
+                    
+                    response = model.generate_content(prompt)
+                    content = response.text
+                    
+                    # Save the research
+                    filename = f"deep_research_{int(time.time())}.md"
+                    self.save_file(content, filename)
+                    
+                    return content
+                    
+                except Exception as tool_error:
+                    print(f"Tool execution failed for {model_name}: {tool_error}. Retrying without tools...")
+                    # Fallback: Try without tools
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content(prompt) # Use same prompt, model will do its best
+                    content = response.text
+                    self.save_file(content, f"deep_research_fallback_{int(time.time())}.md")
+                    return content
+
             except Exception as e:
                 print(f"Model {model_name} failed: {e}")
                 last_error = e
