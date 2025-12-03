@@ -216,34 +216,40 @@ class ContentEmployee:
 
         print(f"Performing Deep Research on: {topic}")
         
-        try:
-            model = genai.GenerativeModel('gemini-1.5-pro')
-            
-            prompt = f"""
-            You are an expert researcher. Conduct a deep dive research on the following topic: "{topic}".
-            
-            Provide a comprehensive summary including:
-            1. Key Concepts & Definitions
-            2. Current Trends & Developments
-            3. Major Challenges & Opportunities
-            4. Notable Figures or Companies
-            5. Future Outlook
-            
-            Format the output in Markdown. Be detailed and authoritative.
-            """
-            
-            response = model.generate_content(prompt)
-            content = response.text
-            
-            # Save the research
-            filename = f"deep_research_{int(time.time())}.md"
-            self.save_file(content, filename)
-            
-            return content
-            
-        except Exception as e:
-            print(f"Deep Research failed: {e}")
-            return f"Error during deep research: {str(e)}"
+        models_to_try = ['gemini-1.5-pro-latest', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro']
+        
+        for model_name in models_to_try:
+            try:
+                print(f"Attempting deep research with model: {model_name}")
+                model = genai.GenerativeModel(model_name)
+                
+                prompt = f"""
+                You are an expert researcher. Conduct a deep dive research on the following topic: "{topic}".
+                
+                Provide a comprehensive summary including:
+                1. Key Concepts & Definitions
+                2. Current Trends & Developments
+                3. Major Challenges & Opportunities
+                4. Notable Figures or Companies
+                5. Future Outlook
+                
+                Format the output in Markdown. Be detailed and authoritative.
+                """
+                
+                response = model.generate_content(prompt)
+                content = response.text
+                
+                # Save the research
+                filename = f"deep_research_{int(time.time())}.md"
+                self.save_file(content, filename)
+                
+                return content
+                
+            except Exception as e:
+                print(f"Model {model_name} failed: {e}")
+                continue
+
+        return "Error: All Gemini models failed to generate content. Please check your API key and available models."
 
     def save_file(self, content: str, filename: str):
         path = self.run_dir / filename
