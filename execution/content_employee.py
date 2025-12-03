@@ -222,22 +222,30 @@ class ContentEmployee:
         for model_name in models_to_try:
             try:
                 print(f"Attempting deep research with model: {model_name}")
-                model = genai.GenerativeModel(model_name)
+                
+                # Configure tools for Google Search Grounding
+                tools = [{'google_search': {}}]
+                model = genai.GenerativeModel(model_name, tools=tools)
                 
                 prompt = f"""
-                You are an expert researcher. Conduct a deep dive research on the following topic: "{topic}".
+                You are an expert researcher with access to Google Search. 
+                Conduct a deep dive research on the following topic: "{topic}".
+                
+                Use Google Search to find the latest, most accurate, and detailed information.
                 
                 Provide a comprehensive summary including:
                 1. Key Concepts & Definitions
-                2. Current Trends & Developments
+                2. Current Trends & Developments (Cite specific recent events/reports)
                 3. Major Challenges & Opportunities
                 4. Notable Figures or Companies
                 5. Future Outlook
                 
-                Format the output in Markdown. Be detailed and authoritative.
+                Format the output in Markdown. Be detailed, authoritative, and cite your sources where possible.
                 """
                 
                 response = model.generate_content(prompt)
+                
+                # Extract text from response (handling potential grounding metadata)
                 content = response.text
                 
                 # Save the research
