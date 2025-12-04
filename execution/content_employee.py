@@ -217,7 +217,7 @@ class ContentEmployee:
         print(f"Performing Deep Research on: {topic}")
         
         # Updated model list to prioritize current stable models
-        models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-1.5-flash-latest', 'gemini-1.5-pro-latest']
+        models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro']
         
         last_error = None
         for model_name in models_to_try:
