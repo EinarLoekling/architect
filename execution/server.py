@@ -16,6 +16,10 @@ CORS(app)  # Enable CORS for all routes
 def generate_content():
     try:
         data = request.json
+        password = data.get('password')
+        if password != "kineticus_admin":
+            return jsonify({"error": "Unauthorized: Invalid Password"}), 401
+
         expertise_text = data.get('expertise')
         tone_text = data.get('tone')
         
@@ -47,6 +51,10 @@ def generate_content():
 def deep_research():
     try:
         data = request.json
+        password = data.get('password')
+        if password != "kineticus_admin":
+            return jsonify({"error": "Unauthorized: Invalid Password"}), 401
+
         topic = data.get('topic')
         
         if not topic:
