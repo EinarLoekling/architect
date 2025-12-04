@@ -228,29 +228,30 @@ class ContentEmployee:
                 # Using the standard tool configuration for Google Search
                 tools = [{'google_search': {}}]
                 
+                # Define prompt outside try block to ensure it's available for fallback
+                prompt = f"""
+                You are an expert researcher with access to Google Search. 
+                Conduct a deep dive research on the following topic: "{topic}".
+                
+                **CRITICAL INSTRUCTION**: Do not provide a generic summary. You must find and cite **specific, high-value signals**.
+                
+                Use Google Search to find:
+                1. **Hard Data & Statistics**: Recent market sizing, growth rates, or survey results (with dates).
+                2. **Expert Quotes**: Direct quotes from industry leaders, CTOs, or researchers.
+                3. **Primary Sources**: Prioritize PDF reports, white papers, and academic journals over SEO blogs.
+                4. **Contrarian Views**: What are the counter-arguments or overlooked risks?
+                
+                Provide a comprehensive report including:
+                - **Executive Summary**: The "So What?" for a B2B decision maker.
+                - **Key Trends (Backed by Data)**: Cite specific numbers.
+                - **Major Players & Innovators**: Who is winning and why?
+                - **Future Outlook (12-24 months)**: Based on expert projections.
+                
+                Format the output in Markdown. Use bolding for key stats. **Cite every claim with a [Source Name]**.
+                """
+
                 try:
                     model = genai.GenerativeModel(model_name, tools=tools)
-                    
-                    prompt = f"""
-                    You are an expert researcher with access to Google Search. 
-                    Conduct a deep dive research on the following topic: "{topic}".
-                    
-                    **CRITICAL INSTRUCTION**: Do not provide a generic summary. You must find and cite **specific, high-value signals**.
-                    
-                    Use Google Search to find:
-                    1. **Hard Data & Statistics**: Recent market sizing, growth rates, or survey results (with dates).
-                    2. **Expert Quotes**: Direct quotes from industry leaders, CTOs, or researchers.
-                    3. **Primary Sources**: Prioritize PDF reports, white papers, and academic journals over SEO blogs.
-                    4. **Contrarian Views**: What are the counter-arguments or overlooked risks?
-                    
-                    Provide a comprehensive report including:
-                    - **Executive Summary**: The "So What?" for a B2B decision maker.
-                    - **Key Trends (Backed by Data)**: Cite specific numbers.
-                    - **Major Players & Innovators**: Who is winning and why?
-                    - **Future Outlook (12-24 months)**: Based on expert projections.
-                    
-                    Format the output in Markdown. Use bolding for key stats. **Cite every claim with a [Source Name]**.
-                    """
                     
                     response = model.generate_content(prompt)
                     content = response.text
