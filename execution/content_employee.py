@@ -216,8 +216,7 @@ class ContentEmployee:
 
         print(f"Performing Deep Research on: {topic}")
         
-        # Updated model list to prioritize current stable models
-        models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro']
+        models_to_try = ['gemini-3-pro-preview', 'gemini-1.5-pro-latest', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro']
         
         last_error = None
         for model_name in models_to_try:
@@ -225,8 +224,8 @@ class ContentEmployee:
                 print(f"Attempting deep research with model: {model_name}")
                 
                 # Configure tools for Google Search Grounding
-                # Using the standard tool configuration for Google Search
-                tools = [{'google_search': {}}]
+                # Try 'google_search_retrieval' which is the correct field for the API
+                tools = [{'google_search_retrieval': {}}]
                 
                 # Define prompt outside try block to ensure it's available for fallback
                 prompt = f"""
