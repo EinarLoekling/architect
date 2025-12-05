@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from content_employee import ContentEmployee
+from visual_employee import VisualEmployee
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -77,6 +78,37 @@ def deep_research():
         print(f"Error: {e}")
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+@app.route('/generate-visuals', methods=['POST'])
+def generate_visuals():
+    try:
+        data = request.json
+        password = data.get('password')
+        if password != "kineticus_admin":
+            return jsonify({"error": "Unauthorized: Invalid Password"}), 401
+
+        post_text = data.get('post_text')
+        
+        if not post_text:
+            return jsonify({"error": "Missing post_text"}), 400
+
+        print("Received visual generation request...")
+        
+        # Initialize Employee
+        employee = VisualEmployee()
+        
+        # Run generation
+        visuals = employee.generate_visuals(post_text)
+        
+        return jsonify({
+            "status": "success",
+            "visuals": visuals
+        })
+
+    except Exception as e:
+        print(f"Error: {e}")
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

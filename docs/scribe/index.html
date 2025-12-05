@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thought Scribe | Kineticus</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="app-container">
+        <header>
+            <div class="logo">Kineticus <span class="highlight">Scribe</span></div>
+        </header>
+
+        <main>
+            <!-- RECORDING SECTION -->
+            <section id="input-section" class="glass-panel">
+                <h2>Capture Thoughts</h2>
+                <div class="recording-controls">
+                    <button id="record-btn" class="record-btn">
+                        <div class="mic-icon"></div>
+                    </button>
+                    <p id="status-text">Tap to Record</p>
+                </div>
+                
+                <textarea id="transcript-area" placeholder="Or type your raw thoughts here..."></textarea>
+            </section>
+
+            <!-- SETTINGS SECTION -->
+            <section id="settings-section" class="glass-panel">
+                <h2>Style & Tone</h2>
+                <div class="control-group">
+                    <label>Personality</label>
+                    <select id="style-select">
+                        <option value="Professional">Professional & Direct</option>
+                        <option value="Casual">Casual & Friendly</option>
+                        <option value="Persuasive">Persuasive Sales</option>
+                        <option value="Empathetic">Empathetic & Soft</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Context (Optional)</label>
+                    <input type="text" id="context-input" placeholder="e.g. Reply to a client who is angry...">
+                </div>
+                <button id="generate-btn" class="primary-btn">Scribe Email</button>
+            </section>
+
+            <!-- RESULT SECTION -->
+            <section id="result-section" class="glass-panel hidden">
+                <h2>Generated Email</h2>
+                <div id="email-output" class="email-content" contenteditable="true"></div>
+                <div class="action-buttons">
+                    <button id="copy-btn" class="secondary-btn">Copy to Clipboard</button>
+                    <button id="retry-btn" class="secondary-btn">Try Again</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

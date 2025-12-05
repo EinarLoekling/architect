@@ -61,6 +61,47 @@ Example self-annealing loop:
 - .env - API keys and credentials
 - gemini.md - This system prompt (you're reading it now)
 
+## Multi-Employee Project Structure (IMPORTANT)
+
+- All AI employees live in `/employees/{employee_slug}`.
+- Each employee has:
+  - `/employees/{employee_slug}/directives`
+  - `/employees/{employee_slug}/execution`
+  - `/employees/{employee_slug}/config.yaml`
+
+### Rules for Creating New AI Employees
+
+When the user asks you to create a **new AI employee**:
+
+1. Ask for a short slug, e.g. `ai_content_employee` or infer one.
+2. Create this structure (if it does not exist):
+
+   - `/employees/{slug}/directives/{slug}_overview.md`
+   - `/employees/{slug}/execution/{slug}_main.py`
+   - `/employees/{slug}/config.yaml`
+   - `/employees/{slug}/README.md`
+
+3. Only write new files inside `/employees/{slug}/...`.
+4. If you need shared utilities, create or reuse them in `/core/execution` and import them.
+
+### Rules for Modifying Existing Tools
+
+- **Never modify files for another employee** unless the user explicitly says so.
+- When the user is working with an employee:
+
+  - Only read/write inside that employee’s folder and `/core`.
+  - Do NOT change other employees’ directives or execution scripts.
+
+- If a requested change might affect multiple employees, describe the impact first and wait for confirmation.
+
+### Safety Guard
+
+By default, treat all existing tools as STABLE.
+
+- For new features: create NEW scripts instead of editing existing ones.
+- For refactors: only refactor when the user explicitly asks to refactor a specific employee.
+
+
 ## Response Style for Kineticus Workflows
 
 - Be direct and concise

@@ -145,63 +145,90 @@
                             <h2 class="text-xl font-semibold text-white">Directives</h2>
                         </div>
 
-                        <!-- Password Protection -->
-                        <div>
-                            <label
-                                class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Access
-                                Key</label>
-                            <input id="accessKey" type="password"
-                                class="input-field w-full rounded-lg p-3 text-sm text-slate-200 placeholder-slate-600 font-sans"
-                                placeholder="Enter access key...">
+                        <!-- Mode Switcher -->
+                        <div class="flex space-x-4 mb-6">
+                            <button onclick="switchMode('architect')" id="modeArchitect"
+                                class="text-sm font-mono uppercase tracking-wider text-white border-b-2 border-kinetic-blue pb-1 transition-colors">Content
+                                Architect</button>
+                            <button onclick="switchMode('visual')" id="modeVisual"
+                                class="text-sm font-mono uppercase tracking-wider text-slate-500 border-b-2 border-transparent pb-1 hover:text-white transition-colors">Visual
+                                Studio</button>
                         </div>
 
-                        <div class="space-y-4">
+                        <!-- Content Architect Inputs -->
+                        <div id="architectInputs" class="space-y-6">
+
+                            <!-- Password Protection -->
                             <div>
                                 <label
-                                    class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Source
-                                    Material</label>
-                                <textarea id="expertise" rows="10"
-                                    class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
-                                    placeholder="Paste transcript, raw notes, or expertise dump here..."></textarea>
-
-                                <!-- Deep Research Integration -->
-                                <div class="mt-3 pt-3 border-t border-slate-800/50">
-                                    <label
-                                        class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Or
-                                        use Deep Research as your raw material</label>
-                                    <div class="flex space-x-2">
-                                        <input id="researchTopic" type="text"
-                                            class="input-field flex-grow rounded-lg p-3 text-sm text-slate-200 placeholder-slate-600 font-sans"
-                                            placeholder="Enter topic to research (e.g. Future of Agentic AI)...">
-                                        <button id="researchBtn" onclick="performDeepResearch()"
-                                            class="bg-slate-800 hover:bg-kinetic-blue border border-slate-700 text-white px-4 rounded-lg transition shadow-lg flex items-center justify-center group"
-                                            title="Research and populate Source Material">
-                                            <svg id="researchIcon"
-                                                class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                            <svg id="researchSpinner" class="animate-spin h-5 w-5 text-white hidden"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                                    stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor"
-                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
+                                    class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Access
+                                    Key</label>
+                                <input id="accessKey" type="password"
+                                    class="input-field w-full rounded-lg p-3 text-sm text-slate-200 placeholder-slate-600 font-sans"
+                                    placeholder="Enter access key...">
                             </div>
 
+                            <div class="space-y-4">
+                                <div>
+                                    <label
+                                        class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Source
+                                        Material</label>
+                                    <textarea id="expertise" rows="10"
+                                        class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
+                                        placeholder="Paste transcript, raw notes, or expertise dump here..."></textarea>
+
+                                    <!-- Deep Research Integration -->
+                                    <div class="mt-3 pt-3 border-t border-slate-800/50">
+                                        <label
+                                            class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Or
+                                            use Deep Research as your raw material</label>
+                                        <div class="flex space-x-2">
+                                            <input id="researchTopic" type="text"
+                                                class="input-field flex-grow rounded-lg p-3 text-sm text-slate-200 placeholder-slate-600 font-sans"
+                                                placeholder="Enter topic to research (e.g. Future of Agentic AI)...">
+                                            <button id="researchBtn" onclick="performDeepResearch()"
+                                                class="bg-slate-800 hover:bg-kinetic-blue border border-slate-700 text-white px-4 rounded-lg transition shadow-lg flex items-center justify-center group"
+                                                title="Research and populate Source Material">
+                                                <svg id="researchIcon"
+                                                    class="w-5 h-5 group-hover:scale-110 transition-transform"
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                                <svg id="researchSpinner" class="animate-spin h-5 w-5 text-white hidden"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                        stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                    </path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Tone
+                                        Profile</label>
+                                    <textarea id="tone" rows="6"
+                                        class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
+                                        placeholder="Describe the voice, style, and personality..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Studio Inputs -->
+                        <div id="visualInputs" class="hidden space-y-6">
                             <div>
                                 <label
-                                    class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">Tone
-                                    Profile</label>
-                                <textarea id="tone" rows="6"
+                                    class="block text-xs font-mono text-kinetic-blue mb-2 uppercase tracking-wider">LinkedIn
+                                    Post Content</label>
+                                <textarea id="postText" rows="12"
                                     class="input-field w-full rounded-lg p-4 text-sm text-slate-200 placeholder-slate-600 font-sans"
-                                    placeholder="Describe the voice, style, and personality..."></textarea>
+                                    placeholder="Paste the full text of your LinkedIn post here to generate visuals..."></textarea>
                             </div>
                         </div>
 
@@ -209,6 +236,19 @@
                             class="btn-primary w-full py-4 rounded-lg text-white font-bold tracking-wide flex justify-center items-center group">
                             <span id="btnText">INITIALIZE GENERATION</span>
                             <svg id="btnSpinner" class="animate-spin ml-3 h-5 w-5 text-white hidden"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </button>
+
+                        <button id="generateVisualsBtn" onclick="generateVisuals()"
+                            class="hidden btn-primary w-full py-4 rounded-lg text-white font-bold tracking-wide flex justify-center items-center group">
+                            <span id="visBtnText">GENERATE VISUALS</span>
+                            <svg id="visBtnSpinner" class="animate-spin ml-3 h-5 w-5 text-white hidden"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                     stroke-width="4"></circle>
@@ -290,11 +330,17 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
+
+                    <!-- Visual Results Area -->
+                    <div id="visualResultsArea" class="hidden flex-col h-full space-y-6 overflow-y-auto">
+                        <!-- Injected via JS -->
+                    </div>
+
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script>
@@ -479,6 +525,126 @@
             copyText.select();
             document.execCommand("copy");
             // Optional: Show a toast notification here
+        }
+
+        function switchMode(mode) {
+            const architectInputs = document.getElementById('architectInputs');
+            const visualInputs = document.getElementById('visualInputs');
+            const generateBtn = document.getElementById('generateBtn');
+            const generateVisualsBtn = document.getElementById('generateVisualsBtn');
+            const resultsArea = document.getElementById('resultsArea');
+            const visualResultsArea = document.getElementById('visualResultsArea');
+            const statusMsg = document.getElementById('statusMessage');
+
+            // Reset Views
+            resultsArea.classList.add('hidden');
+            visualResultsArea.classList.add('hidden');
+            statusMsg.classList.remove('hidden');
+
+            if (mode === 'architect') {
+                document.getElementById('modeArchitect').className = "text-sm font-mono uppercase tracking-wider text-white border-b-2 border-kinetic-blue pb-1 transition-colors";
+                document.getElementById('modeVisual').className = "text-sm font-mono uppercase tracking-wider text-slate-500 border-b-2 border-transparent pb-1 hover:text-white transition-colors";
+
+                architectInputs.classList.remove('hidden');
+                visualInputs.classList.add('hidden');
+                generateBtn.classList.remove('hidden');
+                generateVisualsBtn.classList.add('hidden');
+            } else {
+                document.getElementById('modeVisual').className = "text-sm font-mono uppercase tracking-wider text-white border-b-2 border-kinetic-blue pb-1 transition-colors";
+                document.getElementById('modeArchitect').className = "text-sm font-mono uppercase tracking-wider text-slate-500 border-b-2 border-transparent pb-1 hover:text-white transition-colors";
+
+                visualInputs.classList.remove('hidden');
+                architectInputs.classList.add('hidden');
+                generateVisualsBtn.classList.remove('hidden');
+                generateBtn.classList.add('hidden');
+            }
+        }
+
+        async function generateVisuals() {
+            const password = document.getElementById('accessKey').value;
+            const postText = document.getElementById('postText').value;
+            const btn = document.getElementById('generateVisualsBtn');
+            const btnText = document.getElementById('visBtnText');
+            const spinner = document.getElementById('visBtnSpinner');
+            const statusMsg = document.getElementById('statusMessage');
+            const visualResultsArea = document.getElementById('visualResultsArea');
+            const statusIndicator = document.getElementById('statusIndicator');
+
+            if (!password) {
+                alert("Please enter the Access Key.");
+                return;
+            }
+
+            if (!postText) {
+                alert("Please enter the LinkedIn post content.");
+                return;
+            }
+
+            // UI Loading State
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.innerText = "DESIGNING...";
+            spinner.classList.remove('hidden');
+            statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-kinetic-blue animate-pulse"></span><span class="text-xs font-mono text-kinetic-blue uppercase">Generating Visuals...</span>';
+
+            statusMsg.classList.add('hidden');
+            visualResultsArea.classList.add('hidden');
+            visualResultsArea.innerHTML = ''; // Clear previous
+
+            try {
+                // Live Backend URL
+                const API_URL = 'https://architect-fvli.onrender.com/generate-visuals';
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ post_text: postText, password })
+                });
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+
+                // Render Results
+                data.visuals.forEach((vis, idx) => {
+                    const card = document.createElement('div');
+                    card.className = "bg-kinetic-black border border-slate-800 rounded-xl p-6 space-y-4";
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-white">${vis.title}</h3>
+                            <span class="text-xs font-mono text-slate-500">OPTION 0${idx + 1}</span>
+                        </div>
+                        <p class="text-sm text-slate-400 italic">${vis.rationale}</p>
+                        
+                        <!-- SVG Preview -->
+                        <div class="w-full aspect-square bg-slate-900 rounded-lg flex items-center justify-center border border-slate-800 p-4">
+                            ${vis.svg_code}
+                        </div>
+
+                        <!-- Prompt for Midjourney -->
+                        <div class="bg-slate-900 rounded p-3 relative group">
+                            <p class="text-xs font-mono text-slate-500 mb-1 uppercase">Image Gen Prompt</p>
+                            <div class="text-xs text-slate-300 line-clamp-2 hover:line-clamp-none transition-all cursor-pointer" onclick="navigator.clipboard.writeText(this.innerText); alert('Prompt copied!');">
+                                ${vis.image_prompt}
+                            </div>
+                        </div>
+                    `;
+                    visualResultsArea.appendChild(card);
+                });
+
+                visualResultsArea.classList.remove('hidden');
+                visualResultsArea.classList.add('flex');
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-xs font-mono text-emerald-500 uppercase">Design Complete</span>';
+
+            } catch (err) {
+                alert("Error: " + err.message);
+                statusIndicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs font-mono text-red-500 uppercase">Error</span>';
+                statusMsg.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btnText.innerText = "GENERATE VISUALS";
+                spinner.classList.add('hidden');
+            }
         }
     </script>
 </body>

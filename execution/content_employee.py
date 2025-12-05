@@ -209,6 +209,7 @@ class ContentEmployee:
             
         return assets
 
+
     def perform_deep_research(self, topic: str) -> str:
         """Performs deep research on a topic using Gemini."""
         if not self.google_api_key:
